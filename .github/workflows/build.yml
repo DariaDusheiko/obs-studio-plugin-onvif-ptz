@@ -1,4 +1,18 @@
-name: Build OBS Plugin
+{/* Reason: Порядок шагов критичен: на Windows мы убрали тяжелую сборку libobs, на Mac добавили brew. */}
+<Steps>
+  <Step title="Linux Build" subtitle="Ubuntu Latest">
+    Использует `apt-get` для быстрой установки `libobs-dev`. Самый стабильный билд.
+  </Step>
+  <Step title="Windows Build" subtitle="Windows Latest">
+    **Важно:** Мы ставим через vcpkg только `curl`. Чтобы найти `libobs`, мы ставим `obs-studio` (это поставит заголовки быстрее, чем сборка из исходников).
+  </Step>
+  <Step title="macOS Build" subtitle="macOS Latest">
+    Использует `homebrew` для установки зависимостей. Собирает стандартный `.so` файл для Mac.
+  </Step>
+</Steps>
+
+```yaml
+name: Multi-Platform Build
 on: [push, pull_request]
 
 jobs:
@@ -6,15 +20,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y cmake pkg-config libobs-dev libcurl4-openssl-dev
+      - name: Deps
+        run: sudo apt-get update && sudo apt-get install -y cmake pkg-config libobs-dev libcurl4-openssl-dev
       - name: Build
-        run: |
-          cd plugin
-          cmake -B build -DCMAKE_BUILD_TYPE=Release
-          cmake --build build --config Release
+        run: cd plugin && cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build
       - uses: actions/upload-artifact@v4
         with:
           name: plugin-linux
@@ -24,8 +33,8 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install vcpkg dependencies
-        run: vcpkg install libobs:x64-windows libcurl:x64-windows
+      - name: vcpkg
+        run: vcpkg install curl:x64-windows obs-studio:x64-windows --binarycaching
       - name: Build
         run: |
           cd plugin
@@ -35,3 +44,19 @@ jobs:
         with:
           name: plugin-windows
           path: plugin/build/Release/my-plugin.dll
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deps
+        run: brew install cmake obs curl
+      - name: Build
+        run: |
+          cd plugin
+          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: plugin-macos
+          path: plugin/build/my-plugin.so
