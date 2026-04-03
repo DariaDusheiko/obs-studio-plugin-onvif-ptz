@@ -2,8 +2,6 @@ name: Multi-Platform Build
 on:
   push:
     branches: [main, master]
-  pull_request:
-    branches: [main, master]
   workflow_dispatch:
 
 jobs:
@@ -11,27 +9,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Deps
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y cmake pkg-config libobs-dev libcurl4-openssl-dev
+      - name: Deps
+        run: sudo apt-get update && sudo apt-get install -y cmake pkg-config libobs-dev libcurl4-openssl-dev
       - name: Build
-        run: |
-          cd plugin
-          cmake -B build -DCMAKE_BUILD_TYPE=Release
-          cmake --build build
+        run: cd plugin && cmake -B build -DCMAKE_BUILD_TYPE=Release && cmake --build build
       - uses: actions/upload-artifact@v4
         with:
           name: plugin-linux
-          path: plugin/build/my-plugin.so
+          path: plugin/build/obs-ptz-plugin.so
 
   build-windows:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install vcpkg deps
-        # Мы ставим curl и obs-studio через vcpkg для Windows
-        run: vcpkg install curl:x64-windows obs-studio:x64-windows --binarycaching
+      - name: vcpkg
+        # ИСПОЛЬЗУЕМ libobs вместо obs-studio
+        run: vcpkg install curl:x64-windows libobs:x64-windows --binarycaching
       - name: Build
         run: |
           cd plugin
@@ -40,20 +33,22 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: plugin-windows
-          path: plugin/build/Release/my-plugin.dll
+          path: plugin/build/Release/obs-ptz-plugin.dll
 
   build-macos:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Deps
+      - name: Deps
         run: brew install cmake obs curl
       - name: Build
         run: |
           cd plugin
-          cmake -B build -DCMAKE_BUILD_TYPE=Release
+          # Указываем пути к brew напрямую на всякий случай
+          cmake -B build -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_PREFIX_PATH="/usr/local;/opt/homebrew"
           cmake --build build
       - uses: actions/upload-artifact@v4
         with:
           name: plugin-macos
-          path: plugin/build/my-plugin.so
+          path: plugin/build/obs-ptz-plugin.so
