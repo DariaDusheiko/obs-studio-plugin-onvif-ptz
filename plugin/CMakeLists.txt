@@ -4,13 +4,19 @@ project(obs-ptz-plugin C)
 set(CMAKE_C_STANDARD 99)
 
 if(APPLE)
-    # macOS: Brew ставит всё в разные места в зависимости от процессора (Intel/M1)
+    # macOS: Homebrew paths vary by architecture
     find_path(OBS_INCLUDE_DIR "obs-module.h"
-        PATHS /usr/local/include /opt/homebrew/include /usr/include
+        PATHS
+            /usr/local/include
+            /opt/homebrew/include
         REQUIRED)
+
     find_library(OBS_LIBRARY NAMES obs
-        PATHS /usr/local/lib /opt/homebrew/lib /usr/lib
+        PATHS
+            /usr/local/lib
+            /opt/homebrew/lib
         REQUIRED)
+
     find_package(CURL REQUIRED)
 
     set(LIBOBS_INCLUDE_DIRS ${OBS_INCLUDE_DIR})
