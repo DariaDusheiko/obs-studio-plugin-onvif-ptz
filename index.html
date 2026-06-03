@@ -1,117 +1,1032 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="scroll-smooth">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OBS Studio ONVIF PTZ Plugin</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:Inter,sans-serif;background:#111827;color:#f9fafb;line-height:1.6}
-.container{max-width:1200px;margin:auto;padding:0 24px}
-.hero{min-height:100vh;display:flex;align-items:center;background:radial-gradient(circle at top right,#3b82f620,transparent 40%),radial-gradient(circle at left,#ef444420,transparent 40%)}
-.hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:60px;align-items:center}
-h1{font-size:64px;line-height:1.05;font-weight:800;margin-bottom:24px}
-.subtitle{font-size:20px;color:#cbd5e1;margin-bottom:32px}
-.btns{display:flex;gap:16px;flex-wrap:wrap}
-.btn{padding:16px 28px;border-radius:14px;text-decoration:none;font-weight:700}
-.primary{background:#ef4444;color:white;box-shadow:0 0 40px rgba(239,68,68,.4)}
-.secondary{border:1px solid #3b82f6;color:#fff}
-.mockup{background:#1f1f23;border:1px solid #374151;border-radius:24px;height:520px;display:flex;align-items:center;justify-content:center;color:#9ca3af}
-.metrics{padding:40px 0;background:#1f1f23}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
-.card{background:#161b27;padding:24px;border-radius:18px;border:1px solid #2b3344}
-.card h3{color:#ef4444;margin-bottom:8px}
-.section{padding:110px 0}
-.section-title{text-align:center;font-size:48px;margin-bottom:12px}
-.section-sub{text-align:center;color:#9ca3af;margin-bottom:60px}
-.step{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:80px;align-items:center}
-.image{height:320px;border-radius:20px;background:#1f1f23;border:1px solid #374151;display:flex;align-items:center;justify-content:center;color:#94a3b8}
-.features{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
-.feature{background:#1f1f23;padding:32px;border-radius:20px}
-.feature h3{margin-bottom:16px;color:#3b82f6}
-.devbox{background:#1f1f23;border:1px solid #374151;padding:32px;border-radius:24px}
-pre{background:#0b1220;padding:20px;border-radius:14px;overflow:auto}
-.footercta{text-align:center;padding:120px 0}
-.footercta h2{font-size:54px;margin-bottom:20px}
-@media(max-width:900px){
-.hero-grid,.step,.features,.grid4{grid-template-columns:1fr}
-h1{font-size:42px}
-.section-title,.footercta h2{font-size:34px}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTZ-плагин OBS — Профессиональное управление PTZ-камерами прямо из OBS Studio</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Custom glow effects and scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ef4444;
+        }
+
+        .glow-red {
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.15);
+        }
+        .glow-blue {
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.15);
+        }
+        .text-glow {
+            text-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+        }
+    </style>
 </head>
-<body>
+<body class="bg-[#0b0f19] text-gray-100 antialiased overflow-x-hidden">
 
-<section class="hero">
-<div class="container hero-grid">
-<div>
-<h1>Профессиональное управление PTZ-камерами прямо из OBS Studio</h1>
-<p class="subtitle">Нативный C++ плагин для контроля наклона, поворота и зума IP-камер по протоколу ONVIF.</p>
-<div class="btns">
-<a class="btn primary" href="#">Скачать плагин v2.0</a>
-<a class="btn secondary" href="#">Документация разработчиков</a>
-</div>
-</div>
-<div class="mockup">IMAGE 4 — PTZ Dock Panel Overview</div>
-</div>
-</section>
+    <!-- Header / Navigation -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-[#0b0f19]/80 backdrop-blur-md border-b border-gray-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="relative flex items-center justify-center w-9 h-9 rounded-lg bg-gradient-to-tr from-red-600 to-blue-600 shadow-lg">
+                        <i data-lucide="video" class="w-5 h-5 text-white"></i>
+                        <span class="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+                        </span>
+                    </div>
+                    <div>
+                        <span class="font-extrabold text-white tracking-tight text-lg">OBS <span class="text-blue-500">PTZ</span></span>
+                        <span class="text-[10px] block font-mono text-gray-400 leading-none">v2.0 STABLE</span>
+                    </div>
+                </div>
 
-<section class="metrics">
-<div class="container grid4">
-<div class="card"><h3>Протокол</h3><p>ONVIF Profile S</p></div>
-<div class="card"><h3>Совместимость</h3><p>OBS Studio 29.0 / 30.1+</p></div>
-<div class="card"><h3>Движок видео</h3><p>GStreamer Integration</p></div>
-<div class="card"><h3>Архитектура</h3><p>Native C++ / Qt6</p></div>
-</div>
-</section>
+                <!-- Nav links -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#features" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Возможности</a>
+                    <a href="#simulator" class="text-sm font-medium text-gray-300 hover:text-blue-400 transition-colors flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span> Симулятор
+                    </a>
+                    <a href="#installation" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Установка</a>
+                    <a href="#troubleshooting" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Решение проблем</a>
+                    <a href="#developer" class="text-sm font-medium text-gray-300 hover:text-white transition-colors">Разработчикам</a>
+                </div>
 
-<section class="section">
-<div class="container">
-<h2 class="section-title">Простая интеграция в ваш рабочий процесс трансляции</h2>
-<p class="section-sub">Настройка занимает менее 3 минут</p>
+                <!-- Action button -->
+                <div>
+                    <a href="https://git.miem.hse.ru/gipustovoi/obs-studio-plugin-onvif-ptz/-/tree/master" target="_blank" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-sm font-semibold text-white shadow-lg shadow-red-500/20 transition-all duration-200 hover:-translate-y-0.5">
+                        <i data-lucide="git-branch" class="w-4 h-4"></i>
+                        <span>Git Репозиторий</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-<div class="step"><div><h3>1. Добавление источника ONVIF</h3><p>Выберите ONVIF Camera в списке источников OBS.</p></div><div class="image">IMAGE 1</div></div>
+    <!-- HERO SECTION -->
+    <section class="relative pt-32 pb-24 overflow-hidden border-b border-gray-800 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-950 to-[#0b0f19]">
+        <div class="absolute inset-0 bg-[linear-gradient(to_right,#1f29370a_1px,transparent_1px),linear-gradient(to_bottom,#1f29370a_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Left column text -->
+                <div class="lg:col-span-6 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-semibold tracking-wide text-blue-400">
+                        <span class="flex h-2 w-2 relative">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                        </span>
+                        Нативный C++ Плагин для OBS Studio
+                    </div>
+                    
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.1]">
+                        Управляйте <span class="bg-gradient-to-r from-red-500 via-orange-400 to-blue-500 bg-clip-text text-transparent">PTZ-камерами</span> прямо из OBS
+                    </h1>
+                    
+                    <p class="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto lg:mx-0 font-normal leading-relaxed">
+                        Контроль поворота, наклона и зума IP-камер по стандарту <strong class="text-white">ONVIF Profile S</strong>. Автоматическая адресация пресетов, биндинг горячих клавиш и сверхнизкая задержка через GStreamer.
+                    </p>
 
-<div class="step"><div><h3>2. Конфигурация сети и авторизация</h3><p>Укажите IP, логин, пароль и режим поиска потока.</p></div><div class="image">IMAGE 2</div></div>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
+                        <a href="#simulator" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-base font-bold text-white shadow-xl shadow-blue-500/10 transition-all duration-200 hover:-translate-y-0.5">
+                            <i data-lucide="play-circle" class="w-5 h-5"></i>
+                            <span>Тест-драйв Симулятора</span>
+                        </a>
+                        <a href="#installation" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gray-800 hover:bg-gray-700/80 border border-gray-700 text-base font-bold text-gray-200 transition-all duration-200 hover:-translate-y-0.5">
+                            <i data-lucide="download" class="w-5 h-5"></i>
+                            <span>Скачать Плагин v2.0</span>
+                        </a>
+                    </div>
 
-<div class="step"><div><h3>3. Активация док-панели управления</h3><p>Перейдите в Docks → ONVIF PTZ.</p></div><div class="image">IMAGE 3</div></div>
+                    <!-- Tech Tags -->
+                    <div class="pt-6 border-t border-gray-800/60 max-w-lg mx-auto lg:mx-0">
+                        <p class="text-xs font-mono uppercase text-gray-500 tracking-wider mb-3">Совместимость и стек:</p>
+                        <div class="flex flex-wrap gap-2 justify-center lg:justify-start">
+                            <span class="px-2.5 py-1 rounded bg-[#1f1f23] border border-gray-800 text-xs text-gray-300 font-mono">OBS Studio 29.0+</span>
+                            <span class="px-2.5 py-1 rounded bg-[#1f1f23] border border-gray-800 text-xs text-gray-300 font-mono">Qt6 Framework</span>
+                            <span class="px-2.5 py-1 rounded bg-[#1f1f23] border border-gray-800 text-xs text-gray-300 font-mono">libcurl & libopenssl</span>
+                            <span class="px-2.5 py-1 rounded bg-[#1f1f23] border border-gray-800 text-xs text-gray-300 font-mono">GStreamer Core</span>
+                        </div>
+                    </div>
+                </div>
 
-<div class="step"><div><h3>4. Живой контроль и пресеты</h3><p>Управление камерой в 8 направлениях и работа с пресетами.</p></div><div class="image">IMAGE 4</div></div>
+                <!-- Right column: Beautiful OBS Mock Window containing interactive controller preview -->
+                <div class="lg:col-span-6 relative">
+                    <div class="absolute -inset-1 rounded-2xl bg-gradient-to-r from-red-500/20 to-blue-500/20 blur-xl opacity-75"></div>
+                    
+                    <div class="relative rounded-2xl border border-gray-700/60 bg-[#161920] shadow-2xl overflow-hidden">
+                        <!-- Simulated OS Bar -->
+                        <div class="bg-[#1e2330] px-4 py-3 flex items-center justify-between border-b border-gray-800">
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
+                                <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
+                                <span class="w-3 h-3 rounded-full bg-green-500/80"></span>
+                                <span class="text-xs text-gray-400 font-mono ml-2">OBS Studio 30.1 - ONVIF PTZ Dock Panel</span>
+                            </div>
+                            <span class="text-[10px] font-mono text-red-400 flex items-center gap-1">
+                                <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span> LIVE
+                            </span>
+                        </div>
+                        
+                        <!-- Mini Interactive Widget Preview -->
+                        <div class="p-6 space-y-4">
+                            <!-- Header Info -->
+                            <div class="flex items-center justify-between bg-black/20 p-3 rounded-lg border border-gray-800">
+                                <div>
+                                    <div class="text-xs text-gray-400 font-mono">Камера подключения:</div>
+                                    <div class="text-sm font-bold text-blue-400">IP: 172.18.212.18 [ONVIF Camera]</div>
+                                </div>
+                                <div class="px-2 py-1 bg-green-500/10 text-green-400 text-xs rounded border border-green-500/20 font-mono">ONLINE</div>
+                            </div>
+                            
+                            <!-- Static Directional Controller for design weight -->
+                            <div class="grid grid-cols-12 gap-4">
+                                <div class="col-span-7 flex flex-col justify-center items-center bg-black/30 p-4 rounded-xl border border-gray-800/80">
+                                    <div class="text-xs text-gray-400 mb-3 font-mono">Интуитивный пульт</div>
+                                    
+                                    <!-- Direction buttons -->
+                                    <div class="grid grid-cols-3 gap-2 w-36 h-36 relative">
+                                        <div></div>
+                                        <button class="bg-[#242b3d] hover:bg-blue-600 text-white rounded-lg flex items-center justify-center border border-gray-700 active:scale-95 transition-all"><i data-lucide="chevron-up" class="w-6 h-6"></i></button>
+                                        <div></div>
+                                        
+                                        <button class="bg-[#242b3d] hover:bg-blue-600 text-white rounded-lg flex items-center justify-center border border-gray-700 active:scale-95 transition-all"><i data-lucide="chevron-left" class="w-6 h-6"></i></button>
+                                        <div class="bg-red-500 text-white rounded-lg flex items-center justify-center border border-red-400 font-bold text-xs shadow-lg shadow-red-500/30">STOP</div>
+                                        <button class="bg-[#242b3d] hover:bg-blue-600 text-white rounded-lg flex items-center justify-center border border-gray-700 active:scale-95 transition-all"><i data-lucide="chevron-right" class="w-6 h-6"></i></button>
+                                        
+                                        <div></div>
+                                        <button class="bg-[#242b3d] hover:bg-blue-600 text-white rounded-lg flex items-center justify-center border border-gray-700 active:scale-95 transition-all"><i data-lucide="chevron-down" class="w-6 h-6"></i></button>
+                                        <div></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-span-5 space-y-3">
+                                    <div class="bg-black/30 p-3 rounded-lg border border-gray-800 space-y-2">
+                                        <div class="text-xs text-gray-400 font-mono">Скорость PTZ:</div>
+                                        <div class="flex items-center gap-2">
+                                            <i data-lucide="gauge" class="w-4 h-4 text-gray-400"></i>
+                                            <span class="text-sm font-bold text-white">0.50</span>
+                                        </div>
+                                        <div class="w-full bg-gray-800 h-1.5 rounded-full overflow-hidden">
+                                            <div class="bg-gradient-to-r from-red-500 to-blue-500 h-full" style="width: 50%"></div>
+                                        </div>
+                                    </div>
 
-</div>
-</section>
+                                    <div class="bg-black/30 p-3 rounded-lg border border-gray-800">
+                                        <div class="text-xs text-gray-400 font-mono mb-2">Активные пресеты:</div>
+                                        <div class="grid grid-cols-2 gap-1.5">
+                                            <span class="text-[10px] px-1.5 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded text-center">1: Front view</span>
+                                            <span class="text-[10px] px-1.5 py-1 bg-[#1c2130] text-gray-400 rounded text-center">2: Empty</span>
+                                            <span class="text-[10px] px-1.5 py-1 bg-[#1c2130] text-gray-400 rounded text-center">3: Empty</span>
+                                            <span class="text-[10px] px-1.5 py-1 bg-[#1c2130] text-gray-400 rounded text-center">4: Empty</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-<section class="section">
-<div class="container">
-<h2 class="section-title">Ключевые возможности</h2>
-<div class="features">
-<div class="feature"><h3>Интеллектуальные пресеты</h3><p>Сохранение и переключение между ракурсами одним кликом.</p></div>
-<div class="feature"><h3>Глобальные горячие клавиши</h3><p>Полная интеграция с системой хоткеев OBS Studio.</p></div>
-<div class="feature"><h3>Высокая производительность</h3><p>Асинхронные SOAP/XML запросы через libcurl без фризов интерфейса.</p></div>
-</div>
-</div>
-</section>
+            </div>
+        </div>
+    </section>
 
-<section class="section">
-<div class="container">
-<div class="devbox">
-<h2>Прозрачность разработки и самодиагностика</h2><br>
-<pre>[ONVIF] Connection timeout
-[ONVIF] Authentication failed
-[TRACKING] Target lost
-[TRACKING] Reacquiring object</pre>
-</div>
-</div>
-</section>
+    <!-- LIVE DEMO / CAMERA SIMULATOR -->
+    <section id="simulator" class="py-24 border-b border-gray-800 bg-[#0e1321]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-xs font-mono uppercase tracking-widest text-red-500 font-semibold px-2.5 py-1 rounded bg-red-500/10 border border-red-500/20">Интерактивный тест</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-4">Виртуальный симулятор ONVIF-камеры</h2>
+                <p class="mt-4 text-base sm:text-lg text-gray-400">
+                    Почувствуйте отзывчивость плагина в реальном времени. Кликайте и удерживайте кнопки управления, переключайте готовые пресеты, чтобы увидеть симуляцию изменения ракурса.
+                </p>
+            </div>
 
-<section class="footercta">
-<div class="container">
-<h2>Готовы поднять качество ваших трансляций на новый уровень?</h2>
-<p>Полностью автономный PTZ-плагин для OBS Studio.</p><br><br>
-<a class="btn primary" href="https://git.miem.hse.ru/gipustovoi/obs-studio-plugin-onvif-ptz/-/tree/master">Посмотреть исходный код на Git</a>
-</div>
-</section>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+                <!-- Camera Viewport (Simulated Video) -->
+                <div class="lg:col-span-8 bg-[#0b0f19] rounded-2xl border border-gray-800 overflow-hidden flex flex-col relative group shadow-2xl">
+                    <!-- Video Overlay Indicators -->
+                    <div class="absolute top-4 left-4 z-20 flex items-center gap-2 bg-black/60 px-3 py-1.5 rounded-lg border border-white/10 backdrop-blur-md">
+                        <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+                        <span class="text-xs font-mono font-bold tracking-wider text-white uppercase">CAM_01_ONVIF_STUDIO</span>
+                    </div>
 
+                    <div class="absolute top-4 right-4 z-20 bg-black/60 px-3 py-1.5 rounded-lg border border-white/10 backdrop-blur-md font-mono text-xs text-blue-400" id="zoom-indicator">
+                        Зум: 1.0x
+                    </div>
+
+                    <div class="absolute bottom-4 left-4 z-20 bg-black/60 px-3 py-1.5 rounded-lg border border-white/10 backdrop-blur-md font-mono text-xs text-gray-400" id="coords-indicator">
+                        Позиция: X: 0.00, Y: 0.00
+                    </div>
+
+                    <!-- The Video Frame with Virtual Room (SVG Scene) -->
+                    <div class="relative w-full aspect-video bg-slate-950 overflow-hidden flex items-center justify-center">
+                        <!-- Scene Wrapper that will transform (PAN / TILT / ZOOM) -->
+                        <div id="simulated-camera-scene" class="w-[150%] h-[150%] absolute transition-all duration-300 ease-out flex items-center justify-center" style="transform: translate(0px, 0px) scale(1.0);">
+                            <!-- Beautiful Vector Room Drawing inside -->
+                            <svg class="w-full h-full max-w-[1200px]" viewBox="0 0 800 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Background Room walls -->
+                                <rect width="800" height="500" fill="#131926" />
+                                <path d="M0 0L200 100V400L0 500V0Z" fill="#192031" opacity="0.6" />
+                                <path d="M800 0L600 100V400L800 500V0Z" fill="#192031" opacity="0.6" />
+                                <path d="M200 100H600V400H200V100Z" fill="#1b2437" opacity="0.4" />
+                                
+                                <!-- Room grid lines for deep perspective -->
+                                <line x1="200" y1="100" x2="0" y2="0" stroke="#2c3a54" stroke-width="2" />
+                                <line x1="200" y1="400" x2="0" y2="500" stroke="#2c3a54" stroke-width="2" />
+                                <line x1="600" y1="100" x2="800" y2="0" stroke="#2c3a54" stroke-width="2" />
+                                <line x1="600" y1="400" x2="800" y2="500" stroke="#2c3a54" stroke-width="2" />
+
+                                <!-- Servers / Computers rack drawing (Right side) -->
+                                <g transform="translate(620, 150)">
+                                    <rect width="120" height="200" fill="#2d3748" rx="4" />
+                                    <line x1="10" y1="20" x2="110" y2="20" stroke="#4a5568" stroke-width="4" />
+                                    <!-- Blinking indicators -->
+                                    <circle cx="20" cy="40" r="4" fill="#48bb78" />
+                                    <circle cx="35" cy="40" r="4" fill="#3182ce" />
+                                    <circle cx="50" cy="40" r="4" fill="#ed8936" />
+                                    
+                                    <rect x="10" y="60" width="100" height="15" fill="#1a202c" rx="2" />
+                                    <circle cx="20" cy="67" r="3" fill="#e53e3e" class="animate-pulse" />
+                                    <line x1="35" y1="67" x2="95" y2="67" stroke="#4a5568" stroke-width="2" />
+
+                                    <rect x="10" y="90" width="100" height="15" fill="#1a202c" rx="2" />
+                                    <circle cx="20" cy="97" r="3" fill="#48bb78" />
+                                    <line x1="35" y1="97" x2="95" y2="97" stroke="#4a5568" stroke-width="2" />
+
+                                    <rect x="10" y="120" width="100" height="15" fill="#1a202c" rx="2" />
+                                    <circle cx="20" cy="127" r="3" fill="#ed8936" />
+                                    <line x1="35" y1="127" x2="95" y2="127" stroke="#4a5568" stroke-width="2" />
+                                    
+                                    <rect x="10" y="150" width="100" height="30" fill="#1a202c" rx="2" />
+                                </g>
+
+                                <!-- Large whiteboard with PTZ info / equations (Center wall) -->
+                                <g transform="translate(260, 120)">
+                                    <rect width="280" height="160" fill="#ffffff" rx="6" stroke="#4a5568" stroke-width="4" />
+                                    <text x="20" y="30" fill="#1a202c" font-family="monospace" font-size="14" font-weight="bold">ONVIF PTZ Plugin Setup</text>
+                                    <text x="20" y="55" fill="#2d3748" font-family="monospace" font-size="11">vx, vy, vz in range [-1, 1]</text>
+                                    <text x="20" y="75" fill="#2d3748" font-family="monospace" font-size="11">WSSE: SHA1 Digest Auth</text>
+                                    <text x="20" y="95" fill="#2d3748" font-family="monospace" font-size="11">Camera stream via GStreamer Appsink</text>
+                                    
+                                    <!-- Drawing of schema -->
+                                    <path d="M20 135 H 120 M 70 115 V 155" stroke="#ef4444" stroke-width="2" />
+                                    <circle cx="70" cy="135" r="15" fill="none" stroke="#3b82f6" stroke-dasharray="3 3" stroke-width="2" />
+                                    
+                                    <text x="140" y="130" fill="#ef4444" font-family="monospace" font-size="10" font-weight="bold">ContinuousMove()</text>
+                                    <text x="140" y="145" fill="#3b82f6" font-family="monospace" font-size="10">Pan: x, Tilt: y</text>
+                                </g>
+
+                                <!-- Streaming table & developer desk (Foreground left) -->
+                                <g transform="translate(40, 280)">
+                                    <polygon points="0,100 250,100 220,150 0,150" fill="#2d3748" />
+                                    <rect x="10" y="50" width="80" height="50" fill="#1a202c" rx="4" />
+                                    <!-- Monitor Screen inside -->
+                                    <rect x="14" y="54" width="72" height="42" fill="#2b6cb0" />
+                                    <path d="M20 70 L 40 60 L 60 80" stroke="#ffffff" stroke-width="2" fill="none" />
+                                    
+                                    <!-- Stand -->
+                                    <rect x="45" y="100" width="10" height="20" fill="#4a5568" />
+                                    
+                                    <!-- Keyboard & Mouse -->
+                                    <rect x="110" y="90" width="50" height="6" fill="#1a202c" rx="1" />
+                                    <circle cx="170" cy="93" r="3" fill="#1a202c" />
+                                    
+                                    <!-- Studio Microphone -->
+                                    <path d="M200 40 V 100 M 190 50 H 210 M 195 40 A 5 5 0 0 1 205 40 Z" stroke="#e2e8f0" stroke-width="3" fill="none" />
+                                </g>
+
+                                <!-- Vector character "Developer/Streamer" standing (Middle room) -->
+                                <g transform="translate(420, 220)" id="room-human">
+                                    <!-- Body -->
+                                    <rect x="15" y="40" width="30" height="70" fill="#3182ce" rx="10" />
+                                    <!-- Head -->
+                                    <circle cx="30" cy="25" r="14" fill="#fbd38d" />
+                                    <!-- Hair -->
+                                    <path d="M16 20 C16 10 44 10 44 20" fill="#4a5568" stroke="#4a5568" stroke-width="3" />
+                                    <!-- Jeans -->
+                                    <rect x="15" y="100" width="13" height="40" fill="#2b6cb0" />
+                                    <rect x="32" y="100" width="13" height="40" fill="#2b6cb0" />
+                                    <!-- Shoes -->
+                                    <rect x="10" y="137" width="18" height="8" fill="#1a202c" rx="2" />
+                                    <rect x="32" y="137" width="18" height="8" fill="#1a202c" rx="2" />
+                                    <!-- Tablet/Controller in hand -->
+                                    <rect x="-5" y="60" width="25" height="15" fill="#2d3748" rx="2" stroke="#fff" stroke-width="1" transform="rotate(-15)" />
+                                    <!-- Hands -->
+                                    <path d="M15 50 L -2 65" stroke="#fbd38d" stroke-width="6" stroke-linecap="round" />
+                                    <path d="M45 50 L 52 75" stroke="#fbd38d" stroke-width="6" stroke-linecap="round" />
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulation Control Panel (Simulated PTZ OBS Dock) -->
+                <div class="lg:col-span-4 flex flex-col justify-between obs-charcoal rounded-2xl border border-gray-800 p-6 shadow-2xl relative">
+                    <div>
+                        <div class="flex items-center justify-between pb-4 border-b border-gray-800 mb-6">
+                            <h3 class="font-extrabold text-white text-lg tracking-tight flex items-center gap-2">
+                                <i data-lucide="settings-2" class="w-5 h-5 text-red-500"></i>
+                                Панель ONVIF PTZ
+                            </h3>
+                            <button id="btn-reset" class="px-2.5 py-1 rounded bg-gray-800 hover:bg-gray-700 text-xs font-mono text-gray-300 transition-colors">Сброс</button>
+                        </div>
+
+                        <!-- Device Info Panel -->
+                        <div class="space-y-4">
+                            <!-- Dropdown list source selection -->
+                            <div class="space-y-1.5">
+                                <label class="text-xs font-mono uppercase text-gray-400">Выберите Источник:</label>
+                                <div class="relative">
+                                    <select class="w-full bg-slate-900 border border-gray-800 rounded-lg px-3.5 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-blue-500 font-medium">
+                                        <option>ONVIF Camera (172.18.212.18)</option>
+                                        <option>HIKVISION Zoom (192.168.1.102)</option>
+                                        <option>Dome Track Cam (10.0.0.45)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Speed parameter -->
+                            <div class="space-y-1.5">
+                                <div class="flex justify-between items-center text-xs font-mono uppercase text-gray-400">
+                                    <span>Скорость движения (PTZ Speed):</span>
+                                    <span class="text-blue-400 font-bold" id="speed-label">0.50</span>
+                                </div>
+                                <input type="range" id="speed-slider" min="0.05" max="1.0" step="0.05" value="0.50" class="w-full h-1.5 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-blue-500">
+                            </div>
+
+                            <!-- Interactive Joystick D-Pad (Classic Design) -->
+                            <div class="py-4 flex flex-col items-center">
+                                <span class="text-xs font-mono uppercase text-gray-400 mb-4 text-center">Консоль навигации (клик или удержание)</span>
+                                
+                                <div class="grid grid-cols-3 gap-2 w-40 h-40">
+                                    <div></div>
+                                    <!-- UP -->
+                                    <button id="btn-up" class="bg-slate-900 hover:bg-blue-600 text-white rounded-xl flex items-center justify-center border border-gray-800 active:scale-95 transition-all duration-100 shadow-md">
+                                        <i data-lucide="chevron-up" class="w-7 h-7"></i>
+                                    </button>
+                                    <div></div>
+                                    
+                                    <!-- LEFT -->
+                                    <button id="btn-left" class="bg-slate-900 hover:bg-blue-600 text-white rounded-xl flex items-center justify-center border border-gray-800 active:scale-95 transition-all duration-100 shadow-md">
+                                        <i data-lucide="chevron-left" class="w-7 h-7"></i>
+                                    </button>
+                                    <!-- STOP -->
+                                    <button id="btn-stop" class="bg-red-500 hover:bg-red-600 text-white rounded-xl flex flex-col items-center justify-center border border-red-400 font-extrabold text-[10px] active:scale-95 transition-all duration-100 shadow-lg shadow-red-500/20">
+                                        <i data-lucide="octagon" class="w-5 h-5 mb-0.5"></i>
+                                        STOP
+                                    </button>
+                                    <!-- RIGHT -->
+                                    <button id="btn-right" class="bg-slate-900 hover:bg-blue-600 text-white rounded-xl flex items-center justify-center border border-gray-800 active:scale-95 transition-all duration-100 shadow-md">
+                                        <i data-lucide="chevron-right" class="w-7 h-7"></i>
+                                    </button>
+                                    
+                                    <!-- ZOOM OUT -->
+                                    <button id="btn-zoom-out" class="bg-slate-900 hover:bg-slate-800 text-gray-300 rounded-xl flex items-center justify-center border border-gray-800 active:scale-95 transition-all duration-100" title="Уменьшить зум">
+                                        <i data-lucide="zoom-out" class="w-5 h-5"></i>
+                                    </button>
+                                    <!-- DOWN -->
+                                    <button id="btn-down" class="bg-slate-900 hover:bg-blue-600 text-white rounded-xl flex items-center justify-center border border-gray-800 active:scale-95 transition-all duration-100 shadow-md">
+                                        <i data-lucide="chevron-down" class="w-7 h-7"></i>
+                                    </button>
+                                    <!-- ZOOM IN -->
+                                    <button id="btn-zoom-in" class="bg-slate-900 hover:bg-slate-800 text-gray-300 rounded-xl flex items-center justify-center border border-gray-800 active:scale-95 transition-all duration-100" title="Увеличить зум">
+                                        <i data-lucide="zoom-in" class="w-5 h-5"></i>
+                                    </button>
+                                </div>
+                                
+                                <button id="btn-home" class="mt-4 px-4 py-2 bg-[#252d3e] hover:bg-blue-600 text-white text-xs font-mono rounded-lg border border-gray-700 flex items-center gap-1.5 transition-colors">
+                                    <i data-lucide="home" class="w-3.5 h-3.5"></i>
+                                    Домой (Home)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Presets Custom Container -->
+                    <div class="mt-6 pt-6 border-t border-gray-800/80">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-mono uppercase text-gray-400">Быстрые Пресеты:</span>
+                            <span class="text-[10px] text-gray-500 font-mono">ЛКМ - Переход / ПКМ - Запись</span>
+                        </div>
+                        <div class="grid grid-cols-4 gap-2">
+                            <button id="preset-1" class="preset-btn px-2 py-2.5 bg-blue-500/10 border border-blue-500/30 text-blue-400 hover:bg-blue-500/20 text-xs font-bold rounded-lg transition-all" data-preset="1" title="ЛКМ: Перейти к Пресету 1. ПКМ: Записать позицию">P1</button>
+                            <button id="preset-2" class="preset-btn px-2 py-2.5 bg-[#171b26] border border-gray-800 hover:border-gray-700 text-gray-400 hover:text-white text-xs font-bold rounded-lg transition-all" data-preset="2" title="Слот 2 свободен">P2</button>
+                            <button id="preset-3" class="preset-btn px-2 py-2.5 bg-[#171b26] border border-gray-800 hover:border-gray-700 text-gray-400 hover:text-white text-xs font-bold rounded-lg transition-all" data-preset="3" title="Слот 3 свободен">P3</button>
+                            <button id="preset-4" class="preset-btn px-2 py-2.5 bg-[#171b26] border border-gray-800 hover:border-gray-700 text-gray-400 hover:text-white text-xs font-bold rounded-lg transition-all" data-preset="4" title="Слот 4 свободен">P4</button>
+                            <button id="preset-5" class="preset-btn px-2 py-2.5 bg-[#171b26] border border-gray-800 hover:border-gray-700 text-gray-400 hover:text-white text-xs font-bold rounded-lg transition-all" data-preset="5" title="Слот 5 свободен">P5</button>
+                            <button id="preset-6" class="preset-btn px-2 py-2.5 bg-[#171b26] border border-gray-800 hover:border-gray-700 text-gray-400 hover:text-white text-xs font-bold rounded-lg transition-all" data-preset="6" title="Слот 6 свободен">P6</button>
+                            <button id="preset-7" class="preset-btn px-2 py-2.5 bg-[#171b26] border border-gray-800 hover:border-gray-700 text-gray-400 hover:text-white text-xs font-bold rounded-lg transition-all" data-preset="7" title="Слот 7 свободен">P7</button>
+                            <button id="preset-8" class="preset-btn px-2 py-2.5 bg-[#171b26] border border-gray-800 hover:border-gray-700 text-gray-400 hover:text-white text-xs font-bold rounded-lg transition-all" data-preset="8" title="Слот 8 свободен">P8</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DETAILED USER FUNCTIONAL FEATURES -->
+    <section id="features" class="py-24 border-b border-gray-800 bg-[#0b0f19]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:text-center max-w-3xl mx-auto mb-20">
+                <span class="text-xs font-mono uppercase text-blue-500 font-bold tracking-widest px-3 py-1 rounded bg-blue-500/10 border border-blue-500/20">Профессиональные функции</span>
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-4">Разработано специально для эфирного вещания</h2>
+                <p class="mt-4 text-base sm:text-lg text-gray-400">
+                    Плагин решает ключевые проблемы аппаратных систем управления PTZ-камерами, избавляя от лишних контроллеров.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-slate-900/40 border border-gray-800 rounded-2xl p-8 hover:border-gray-700 transition-all duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400 mb-6">
+                        <i data-lucide="keyboard" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-3">Глобальные горячие клавиши</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        Регистрирует горячие клавиши на каждую камеру. Движение выполняется только пока клавиша зажата, а при отпускании камера мгновенно останавливается.
+                    </p>
+                </div>
+
+                <!-- Feature 2 -->
+                <div class="bg-slate-900/40 border border-gray-800 rounded-2xl p-8 hover:border-gray-700 transition-all duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-400 mb-6">
+                        <i data-lucide="cpu" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-3">Асинхронные SOAP/XML запросы</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        Все сетевые операции выполняются в отдельном фоновом потоке. Полностью исключены микрофризы интерфейса OBS Studio при отправке PTZ-команд.
+                    </p>
+                </div>
+
+                <!-- Feature 3 -->
+                <div class="bg-slate-900/40 border border-gray-800 rounded-2xl p-8 hover:border-gray-700 transition-all duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-green-500/10 border border-green-500/30 flex items-center justify-center text-green-400 mb-6">
+                        <i data-lucide="shield-check" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-3">WS-Security Digest авторизация</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        Безопасная аутентификация по стандарту WSSE с использованием криптографических SHA1 дайджестов и уникальных Nonce меток.
+                    </p>
+                </div>
+
+                <!-- Feature 4 -->
+                <div class="bg-slate-900/40 border border-gray-800 rounded-2xl p-8 hover:border-gray-700 transition-all duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center text-yellow-400 mb-6">
+                        <i data-lucide="sliders" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-3">Кастомные пресеты (1-8 слотов)</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        Легкое управление сценой. Запоминайте и переназывайте пресеты прямо в плагине или подтягивайте уже существующие конфигурации из памяти самой камеры.
+                    </p>
+                </div>
+
+                <!-- Feature 5 -->
+                <div class="bg-slate-900/40 border border-gray-800 rounded-2xl p-8 hover:border-gray-700 transition-all duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-6">
+                        <i data-lucide="link" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-3">Интеграция GStreamer Pipeline</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        Декодирование RTSP видеопотока через асинхронный GStreamer с выводом в формате NV12 прямо в рендер-движок OBS. Высокая частота кадров.
+                    </p>
+                </div>
+
+                <!-- Feature 6 -->
+                <div class="bg-slate-900/40 border border-gray-800 rounded-2xl p-8 hover:border-gray-700 transition-all duration-300">
+                    <div class="w-12 h-12 rounded-xl bg-teal-500/10 border border-teal-500/30 flex items-center justify-center text-teal-400 mb-6">
+                        <i data-lucide="settings" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-3">Поддержка горячей замены</h3>
+                    <p class="text-sm text-gray-400 leading-relaxed">
+                        Плагин отслеживает события OBS `source_create` и `source_destroy`, динамически обновляя выпадающие списки выбора камер без перезапуска приложения.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- INSTALLATION & WORKFLOW -->
+    <section id="installation" class="py-24 border-b border-gray-800 bg-[#0e1321]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+                
+                <!-- Left side: Detailed guides -->
+                <div class="lg:col-span-7 space-y-8">
+                    <div>
+                        <span class="text-xs font-mono uppercase text-red-400 font-semibold tracking-wider">Шаг за шагом</span>
+                        <h2 class="text-3xl font-extrabold text-white mt-2">Руководство по быстрой установке</h2>
+                        <p class="text-gray-400 mt-2">
+                            Как разместить плагин и настроить его для стриминга.
+                        </p>
+                    </div>
+
+                    <!-- Steps Timeline -->
+                    <div class="space-y-6">
+                        <!-- Step A -->
+                        <div class="flex gap-4 items-start">
+                            <div class="w-8 h-8 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 font-bold text-sm flex items-center justify-center shrink-0">А</div>
+                            <div>
+                                <h4 class="text-base font-bold text-white">Размещение файлов в системе (macOS)</h4>
+                                <p class="text-sm text-gray-400 mt-1">
+                                    Переместите полученный после сборки бандл <code class="font-mono text-xs bg-black/40 px-1 py-0.5 rounded text-red-400">.so</code> в папку плагинов OBS Studio по пути: <br>
+                                    <code class="font-mono text-[11px] block text-blue-300 bg-slate-900 px-2 py-1 rounded mt-2 border border-gray-800">~/Library/Application Support/obs-studio/plugins/</code>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Step B -->
+                        <div class="flex gap-4 items-start">
+                            <div class="w-8 h-8 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 font-bold text-sm flex items-center justify-center shrink-0">Б</div>
+                            <div>
+                                <h4 class="text-base font-bold text-white">Конфигурация источника камеры</h4>
+                                <p class="text-sm text-gray-400 mt-1">
+                                    Добавьте новый источник <strong class="text-white">ONVIF Camera</strong> в OBS. Заполните IP-адрес вашей камеры, пароль ONVIF-аккаунта, и выберите режим обнаружения URL потока. Профиль <code class="text-xs bg-black/30 p-1 rounded font-mono">0</code> — для основного HD потока, <code class="text-xs bg-black/30 p-1 rounded font-mono">1</code> — для субпотока.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Step C -->
+                        <div class="flex gap-4 items-start">
+                            <div class="w-8 h-8 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 font-bold text-sm flex items-center justify-center shrink-0">В</div>
+                            <div>
+                                <h4 class="text-base font-bold text-white">Настройка прав macOS (Важно для удержания клавиш)</h4>
+                                <p class="text-sm text-gray-400 mt-1">
+                                    Для корректной работы хоткеев на macOS перейдите в: <br>
+                                    <span class="text-xs text-white bg-[#1a1f2c] px-2 py-1 rounded mt-1.5 inline-block font-mono">Системные настройки → Конфиденциальность и безопасность → Мониторинг ввода</span>. <br>Включите тумблер для <strong class="text-blue-400">OBS.app</strong> и полностью перезапустите приложение.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right side: System requirements block -->
+                <div class="lg:col-span-5 bg-slate-900/50 border border-gray-800 rounded-2xl p-8 relative">
+                    <div class="absolute top-0 right-0 transform translate-x-4 -translate-y-4 w-12 h-12 bg-blue-500/10 rounded-full blur-xl"></div>
+                    
+                    <h3 class="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                        <i data-lucide="info" class="w-5 h-5 text-blue-400"></i>
+                        Системные требования
+                    </h3>
+
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center py-2 border-b border-gray-800/60 text-sm">
+                            <span class="text-gray-400 font-mono">OBS Studio</span>
+                            <span class="text-white font-bold">29.0 / Рекомендуется 30.1+</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-800/60 text-sm">
+                            <span class="text-gray-400 font-mono">Операционная система</span>
+                            <span class="text-white font-bold">macOS 12+ (проверен на macOS 14)</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-800/60 text-sm">
+                            <span class="text-gray-400 font-mono">Процессор (CPU)</span>
+                            <span class="text-white font-bold">Минимум 4 ядра (6+ для AI трекинга)</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-800/60 text-sm">
+                            <span class="text-gray-400 font-mono">Оперативная память</span>
+                            <span class="text-white font-bold">4 ГБ (Рекомендуется 8 ГБ)</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-gray-800/60 text-sm">
+                            <span class="text-gray-400 font-mono">Локальная сеть</span>
+                            <span class="text-white font-bold">100 Mbps (1 Gbps для H.265 потоков)</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 text-sm">
+                            <span class="text-gray-400 font-mono">Поддерживаемые камеры</span>
+                            <span class="text-white font-bold text-right">ONVIF Profile S + PTZ (HIKVISION подтвержден)</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- TROUBLESHOOTING BOX -->
+    <section id="troubleshooting" class="py-24 border-b border-gray-800 bg-[#0b0f19]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:text-center max-w-3xl mx-auto mb-16">
+                <span class="text-xs font-mono uppercase tracking-widest text-red-500 font-semibold px-2.5 py-1 rounded bg-red-500/10 border border-red-500/20">Самодиагностика</span>
+                <h2 class="text-3xl font-extrabold text-white mt-4">Решение возможных проблем</h2>
+                <p class="mt-3 text-gray-400">
+                    Рекомендации разработчиков плагина при возникновении неполадок с подключением или вещанием.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Card 1: Connection -->
+                <div class="bg-slate-900/40 border border-gray-800 p-6 rounded-2xl relative">
+                    <div class="flex gap-4 items-start">
+                        <div class="p-3 bg-red-500/10 border border-red-500/20 text-red-400 rounded-xl">
+                            <i data-lucide="wifi-off" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white mb-2">Проблемы с сетевым подключением</h3>
+                            <ul class="text-sm text-gray-400 space-y-2 list-disc list-inside">
+                                <li><strong>«Тайм-аут соединения»:</strong> проверьте пинг до IP адреса камеры, правильность указания порта ONVIF (по умолчанию 80).</li>
+                                <li><strong>«Аутентификация не удалась»:</strong> проверьте учетные данные, созданные на камере именно в разделе пользователей ONVIF (они могут отличаться от админ-панели веб-интерфейса).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Streams -->
+                <div class="bg-slate-900/40 border border-gray-800 p-6 rounded-2xl">
+                    <div class="flex gap-4 items-start">
+                        <div class="p-3 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-xl">
+                            <i data-lucide="tv-2" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white mb-2">Ошибки видеопотока</h3>
+                            <ul class="text-sm text-gray-400 space-y-2 list-disc list-inside">
+                                <li><strong>Черный экран:</strong> проверьте RTSP-порт (обычно 554). Переключите транспортный протокол на TCP вместо UDP.</li>
+                                <li><strong>Подтормаживание кадров:</strong> увеличьте размер буфера latency_ms в свойствах источника, смените кодек на H.264.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Tracking -->
+                <div class="bg-slate-900/40 border border-gray-800 p-6 rounded-2xl">
+                    <div class="flex gap-4 items-start">
+                        <div class="p-3 bg-green-500/10 border border-green-500/20 text-green-400 rounded-xl">
+                            <i data-lucide="scan" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white mb-2">Проблемы автоотслеживания</h3>
+                            <ul class="text-sm text-gray-400 space-y-2 list-disc list-inside">
+                                <li><strong>Объект часто теряется:</strong> увеличьте размер зоны интереса (ROI), уменьшите общую скорость слежения PTZ, позаботьтесь об однородном освещении студии.</li>
+                                <li><strong>Высокая нагрузка на процессор:</strong> увеличьте интервал обработки до пропуска n-кадров, снизьте разрешение анализируемого субпотока.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Logging -->
+                <div class="bg-slate-900/40 border border-gray-800 p-6 rounded-2xl">
+                    <div class="flex gap-4 items-start">
+                        <div class="p-3 bg-purple-500/10 border border-purple-500/20 text-purple-400 rounded-xl">
+                            <i data-lucide="terminal" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-white mb-2">Логирование отладки</h3>
+                            <p class="text-sm text-gray-400 leading-relaxed">
+                                Запустите OBS с терминала с префиксами: <code class="font-mono text-xs bg-slate-900 px-1.5 py-0.5 rounded text-red-400">--verbose --log-level debug</code>. <br>
+                                Логи плагина будут помечаться тегами <code class="text-xs text-blue-400 font-mono">[ONVIF]</code> и <code class="text-xs text-purple-400 font-mono">[TRACKING]</code> в окне вывода.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DEVELOPER REFERENCE SECTION -->
+    <section id="developer" class="py-24 bg-[#0e1321] border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:grid lg:grid-cols-12 lg:gap-16 items-start">
+                
+                <!-- Left panel: component diagrams and code architecture -->
+                <div class="lg:col-span-5 space-y-8">
+                    <div>
+                        <span class="text-xs font-mono uppercase text-blue-500 font-semibold tracking-wider">Раздел инженера</span>
+                        <h2 class="text-3xl font-extrabold text-white mt-2">Архитектурный справочник C++</h2>
+                        <p class="text-gray-400 mt-2">
+                            Кодовая база плагина разделена на 3 независимых компонента, общающихся через строго типизированные API интерфейсы.
+                        </p>
+                    </div>
+
+                    <!-- Component List -->
+                    <div class="space-y-4">
+                        <div class="bg-[#0b0f19] p-4 rounded-xl border border-gray-800 flex gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0 text-blue-400 font-mono text-sm font-bold">1</div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white">Клиент ONVIF (onvif_client.cpp)</h4>
+                                <p class="text-xs text-gray-400 mt-1">Отвечает за сериализацию SOAP/XML шаблонов, генерацию WS-Security дайджестов и отправку HTTP-команд через curl.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-[#0b0f19] p-4 rounded-xl border border-gray-800 flex gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0 text-blue-400 font-mono text-sm font-bold">2</div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white">Виджет PTZ Dock (ptz-dock.cpp)</h4>
+                                <p class="text-xs text-gray-400 mt-1">Пользовательский интерфейс на базе Qt UI, интегрированный как встраиваемая док-панель OBS. Потокобезопасная синхронизация.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-[#0b0f19] p-4 rounded-xl border border-gray-800 flex gap-4">
+                            <div class="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0 text-blue-400 font-mono text-sm font-bold">3</div>
+                            <div>
+                                <h4 class="text-sm font-bold text-white">Источник OBS Source (onvif-ptz-source.cpp)</h4>
+                                <p class="text-xs text-gray-400 mt-1">Регистрирует тип источника в OBS. Запускает конвейер декодирования GStreamer и передает кадры NV12 в движок OBS.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right panel: Code Block or API viewer -->
+                <div class="lg:col-span-7 mt-12 lg:mt-0 relative">
+                    <div class="absolute -inset-1 rounded-2xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 blur-xl"></div>
+                    
+                    <div class="relative rounded-xl border border-gray-800 bg-[#0b0f19] shadow-2xl overflow-hidden font-mono text-xs">
+                        <!-- Code header -->
+                        <div class="bg-slate-900 px-5 py-3 border-b border-gray-800/80 flex items-center justify-between text-gray-400">
+                            <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> class ONVIFClient API</span>
+                            <span class="text-[10px]">C++ / CMake</span>
+                        </div>
+
+                        <!-- Code Content -->
+                        <div class="p-6 overflow-x-auto text-gray-300 space-y-4">
+                            <div>
+                                <span class="text-blue-400">class</span> <span class="text-yellow-400 font-bold">ONVIFClient</span> {
+                            </div>
+                            <div class="pl-4 text-gray-500">
+                                // Конструктор инициализирует Curl и строит URL-адреса сервисов ONVIF
+                            </div>
+                            <div class="pl-4">
+                                <span class="text-purple-400">public:</span>
+                                <div class="pl-4">
+                                    <span class="text-yellow-400">ONVIFClient</span>(std::string host, std::string user, std::string pass, <span class="text-blue-400">int</span> port = 80);
+                                    <br>
+                                    <span class="text-yellow-400">~ONVIFClient</span>();
+                                </div>
+                            </div>
+                            
+                            <div class="pl-4 text-gray-500">
+                                // Основные API запросы к камере
+                            </div>
+                            <div class="pl-8 space-y-1">
+                                <div><span class="text-blue-400">bool</span> <span class="text-green-400">getDeviceInformation</span>();</div>
+                                <div><span class="text-blue-400">bool</span> <span class="text-green-400">getProfiles</span>();</div>
+                                <div>std::string <span class="text-green-400">getRTSPStreamURL</span>();</div>
+                            </div>
+
+                            <div class="pl-4 text-gray-500">
+                                // Команды PTZ (ContinuousMove)
+                            </div>
+                            <div class="pl-8 space-y-1">
+                                <div><span class="text-blue-400">bool</span> <span class="text-green-400">ptzContinuousMove</span>(<span class="text-blue-400">float</span> vx, <span class="text-blue-400">float</span> vy, <span class="text-blue-400">float</span> vz);</div>
+                                <div><span class="text-blue-400">bool</span> <span class="text-green-400">ptzStop</span>();</div>
+                                <div><span class="text-blue-400">bool</span> <span class="text-green-400">ptzGoToHome</span>(<span class="text-blue-400">float</span> speed = 0.5f);</div>
+                            </div>
+
+                            <div class="pl-4 text-gray-500">
+                                // Генерация WSSE Дайджеста авторизации
+                            </div>
+                            <div class="pl-8">
+                                std::string <span class="text-green-400">generatePasswordDigest</span>(std::string nonce, std::string created, std::string pass);
+                            </div>
+                            <div>
+                                };
+                            </div>
+                        </div>
+
+                        <!-- Footer indicator -->
+                        <div class="bg-slate-900/60 p-4 border-t border-gray-800/80 text-[11px] text-gray-500 flex justify-between">
+                            <span>Зависимость: libcurl, openssl</span>
+                            <span>Метод авторизации: PasswordDigest</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CONVERSION CALL TO ACTION FOOTER -->
+    <section class="relative overflow-hidden py-24 bg-gradient-to-tr from-blue-900/30 via-[#0b0f19] to-red-900/20 border-t border-gray-800">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+            <h2 class="text-3xl sm:text-4xl font-extrabold text-white leading-tight">
+                Готовы интегрировать PTZ управление в свои стримы?
+            </h2>
+            <p class="mt-4 text-base sm:text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
+                Плагин полностью бесплатен, поставляется с открытым кодом и готов к внедрению в эфирные лектории, киберспортивные арены или студии записи подкастов.
+            </p>
+            
+            <div class="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4">
+                <a href="https://git.miem.hse.ru/gipustovoi/obs-studio-plugin-onvif-ptz/-/tree/master" target="_blank" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-base font-bold rounded-xl text-white shadow-xl shadow-red-500/20 transition-all duration-200 hover:-translate-y-0.5">
+                    <i data-lucide="github" class="w-5 h-5"></i>
+                    <span>Посмотреть на Git MIEM</span>
+                </a>
+                <a href="#simulator" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-slate-800 hover:bg-slate-700 text-base font-bold rounded-xl text-gray-200 border border-gray-700 transition-all duration-200 hover:-translate-y-0.5">
+                    <span>Перейти к Симулятору</span>
+                </a>
+            </div>
+
+            <div class="mt-16 pt-8 border-t border-gray-800/60 text-xs text-gray-500 font-mono">
+                &copy; 2026 PTZ-plugin для OBS Studio. Разработано в МИЭМ НИУ ВШЭ. Все права защищены.
+            </div>
+        </div>
+    </section>
+
+    <!-- PTZ SIMULATOR JAVASCRIPT LOGIC -->
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        // Simulator State variables
+        let posX = 0;       // Translated position X
+        let posY = 0;       // Translated position Y
+        let scaleVal = 1.0; // Zoom scale factor
+
+        const maxOffset = 180; // Limit for PTZ movement constraints
+
+        // Elements
+        const sceneEl = document.getElementById('simulated-camera-scene');
+        const zoomInd = document.getElementById('zoom-indicator');
+        const coordsInd = document.getElementById('coords-indicator');
+        const speedSlider = document.getElementById('speed-slider');
+        const speedLabel = document.getElementById('speed-label');
+
+        // Presets stored coordinates (X, Y, Scale)
+        const presets = {
+            1: { x: -80, y: -20, scale: 1.4, name: "1: Table view" },
+            2: { x: 120, y: -40, scale: 1.6, name: "2: Server Rack" },
+            3: { x: 50, y: 30, scale: 1.2, name: "3: Presenter" },
+            4: { x: 0, y: 0, scale: 1.0, name: "4: Empty" },
+            5: { x: 0, y: 0, scale: 1.0, name: "5: Empty" },
+            6: { x: 0, y: 0, scale: 1.0, name: "6: Empty" },
+            7: { x: 0, y: 0, scale: 1.0, name: "7: Empty" },
+            8: { x: 0, y: 0, scale: 1.0, name: "8: Empty" }
+        };
+
+        // Active movement speed multiplier
+        let currentSpeed = 0.50;
+
+        // Interval references for Continuous Press / Click-hold simulation
+        let moveInterval = null;
+
+        // Slider listener
+        speedSlider.addEventListener('input', (e) => {
+            currentSpeed = parseFloat(e.target.value);
+            speedLabel.textContent = currentSpeed.toFixed(2);
+        });
+
+        // Function to update visual transform
+        function updateSceneTransform() {
+            sceneEl.style.transform = `translate(${posX}px, ${posY}px) scale(${scaleVal})`;
+            zoomInd.textContent = `Зум: ${scaleVal.toFixed(1)}x`;
+            
+            // Normalize coordinates between [-1.00, 1.00] for representation
+            let normX = (posX / maxOffset).toFixed(2);
+            let normY = (posY / maxOffset).toFixed(2);
+            coordsInd.textContent = `Позиция: X: ${normX}, Y: ${normY}`;
+        }
+
+        // Stop function
+        function stopMovement() {
+            if (moveInterval) {
+                clearInterval(moveInterval);
+                moveInterval = null;
+            }
+        }
+
+        // Apply movement delta
+        function applyMove(dx, dy) {
+            posX += dx * currentSpeed * 25;
+            posY += dy * currentSpeed * 25;
+
+            // Restrict boundaries
+            if (posX > maxOffset) posX = maxOffset;
+            if (posX < -maxOffset) posX = -maxOffset;
+            if (posY > maxOffset) posY = maxOffset;
+            if (posY < -maxOffset) posY = -maxOffset;
+
+            updateSceneTransform();
+        }
+
+        // Apply zoom delta
+        function applyZoom(zoomIn) {
+            if (zoomIn) {
+                scaleVal += 0.1 * currentSpeed;
+            } else {
+                scaleVal -= 0.1 * currentSpeed;
+            }
+
+            // Constraints for scale
+            if (scaleVal > 2.5) scaleVal = 2.5;
+            if (scaleVal < 0.8) scaleVal = 0.8;
+
+            updateSceneTransform();
+        }
+
+        // Setup triggers (press and hold / mouse down & touch start)
+        function setupHoldTrigger(buttonId, actionFn) {
+            const btn = document.getElementById(buttonId);
+            
+            const startAction = (e) => {
+                e.preventDefault();
+                stopMovement();
+                actionFn();
+                moveInterval = setInterval(actionFn, 80);
+            };
+
+            btn.addEventListener('mousedown', startAction);
+            btn.addEventListener('touchstart', startAction);
+        }
+
+        // Set up action listeners
+        setupHoldTrigger('btn-up', () => applyMove(0, 1));
+        setupHoldTrigger('btn-down', () => applyMove(0, -1));
+        setupHoldTrigger('btn-left', () => applyMove(1, 0));
+        setupHoldTrigger('btn-right', () => applyMove(-1, 0));
+        
+        setupHoldTrigger('btn-zoom-in', () => applyZoom(true));
+        setupHoldTrigger('btn-zoom-out', () => applyZoom(false));
+
+        // Global Mouseup / Touchend to stop continuous actions
+        window.addEventListener('mouseup', stopMovement);
+        window.addEventListener('touchend', stopMovement);
+
+        // Stop button
+        document.getElementById('btn-stop').addEventListener('click', () => {
+            stopMovement();
+        });
+
+        // Home button
+        document.getElementById('btn-home').addEventListener('click', () => {
+            posX = 0;
+            posY = 0;
+            scaleVal = 1.0;
+            updateSceneTransform();
+        });
+
+        // Reset config
+        document.getElementById('btn-reset').addEventListener('click', () => {
+            posX = 0;
+            posY = 0;
+            scaleVal = 1.0;
+            updateSceneTransform();
+        });
+
+        // Presets events
+        const presetButtons = document.querySelectorAll('.preset-btn');
+        presetButtons.forEach(btn => {
+            const presetId = btn.getAttribute('data-preset');
+
+            // Left Click (Apply Preset)
+            btn.addEventListener('click', (e) => {
+                const config = presets[presetId];
+                posX = config.x;
+                posY = config.y;
+                scaleVal = config.scale;
+                updateSceneTransform();
+
+                // Highlight active button
+                presetButtons.forEach(b => {
+                    b.classList.remove('bg-blue-500/20', 'border-blue-500/50', 'text-blue-300');
+                });
+                btn.classList.add('bg-blue-500/20', 'border-blue-500/50', 'text-blue-300');
+            });
+
+            // Right Click (Save Current Coordinates to Preset)
+            btn.addEventListener('contextmenu', (e) => {
+                e.preventDefault(); // Prevent native context menu
+                
+                // Prompt mock rename
+                let newName = prompt(`Записать текущую позицию камеры в Слот ${presetId}? Введите название ракурса:`, `Ракурс ${presetId}`);
+                if (newName !== null) {
+                    presets[presetId] = {
+                        x: posX,
+                        y: posY,
+                        scale: scaleVal,
+                        name: `${presetId}: ${newName}`
+                    };
+                    btn.textContent = `P${presetId}`;
+                    btn.title = `ЛКМ: Перейти к "${newName}". ПКМ: Переписать.`;
+                    btn.classList.remove('text-gray-400');
+                    btn.classList.add('text-green-400', 'border-green-500/30', 'bg-green-500/5');
+                }
+            });
+        });
+
+        // Set Default Transform State
+        updateSceneTransform();
+    </script>
 </body>
 </html>
