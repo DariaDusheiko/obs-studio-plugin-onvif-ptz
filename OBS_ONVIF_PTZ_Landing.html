@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OBS Studio ONVIF PTZ Plugin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Inter,sans-serif;background:#111827;color:#f9fafb;line-height:1.6}
+.container{max-width:1200px;margin:auto;padding:0 24px}
+.hero{min-height:100vh;display:flex;align-items:center;background:radial-gradient(circle at top right,#3b82f620,transparent 40%),radial-gradient(circle at left,#ef444420,transparent 40%)}
+.hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:60px;align-items:center}
+h1{font-size:64px;line-height:1.05;font-weight:800;margin-bottom:24px}
+.subtitle{font-size:20px;color:#cbd5e1;margin-bottom:32px}
+.btns{display:flex;gap:16px;flex-wrap:wrap}
+.btn{padding:16px 28px;border-radius:14px;text-decoration:none;font-weight:700}
+.primary{background:#ef4444;color:white;box-shadow:0 0 40px rgba(239,68,68,.4)}
+.secondary{border:1px solid #3b82f6;color:#fff}
+.mockup{background:#1f1f23;border:1px solid #374151;border-radius:24px;height:520px;display:flex;align-items:center;justify-content:center;color:#9ca3af}
+.metrics{padding:40px 0;background:#1f1f23}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.card{background:#161b27;padding:24px;border-radius:18px;border:1px solid #2b3344}
+.card h3{color:#ef4444;margin-bottom:8px}
+.section{padding:110px 0}
+.section-title{text-align:center;font-size:48px;margin-bottom:12px}
+.section-sub{text-align:center;color:#9ca3af;margin-bottom:60px}
+.step{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:80px;align-items:center}
+.image{height:320px;border-radius:20px;background:#1f1f23;border:1px solid #374151;display:flex;align-items:center;justify-content:center;color:#94a3b8}
+.features{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.feature{background:#1f1f23;padding:32px;border-radius:20px}
+.feature h3{margin-bottom:16px;color:#3b82f6}
+.devbox{background:#1f1f23;border:1px solid #374151;padding:32px;border-radius:24px}
+pre{background:#0b1220;padding:20px;border-radius:14px;overflow:auto}
+.footercta{text-align:center;padding:120px 0}
+.footercta h2{font-size:54px;margin-bottom:20px}
+@media(max-width:900px){
+.hero-grid,.step,.features,.grid4{grid-template-columns:1fr}
+h1{font-size:42px}
+.section-title,.footercta h2{font-size:34px}
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+<div class="container hero-grid">
+<div>
+<h1>Профессиональное управление PTZ-камерами прямо из OBS Studio</h1>
+<p class="subtitle">Нативный C++ плагин для контроля наклона, поворота и зума IP-камер по протоколу ONVIF.</p>
+<div class="btns">
+<a class="btn primary" href="#">Скачать плагин v2.0</a>
+<a class="btn secondary" href="#">Документация разработчиков</a>
+</div>
+</div>
+<div class="mockup">IMAGE 4 — PTZ Dock Panel Overview</div>
+</div>
+</section>
+
+<section class="metrics">
+<div class="container grid4">
+<div class="card"><h3>Протокол</h3><p>ONVIF Profile S</p></div>
+<div class="card"><h3>Совместимость</h3><p>OBS Studio 29.0 / 30.1+</p></div>
+<div class="card"><h3>Движок видео</h3><p>GStreamer Integration</p></div>
+<div class="card"><h3>Архитектура</h3><p>Native C++ / Qt6</p></div>
+</div>
+</section>
+
+<section class="section">
+<div class="container">
+<h2 class="section-title">Простая интеграция в ваш рабочий процесс трансляции</h2>
+<p class="section-sub">Настройка занимает менее 3 минут</p>
+
+<div class="step"><div><h3>1. Добавление источника ONVIF</h3><p>Выберите ONVIF Camera в списке источников OBS.</p></div><div class="image">IMAGE 1</div></div>
+
+<div class="step"><div><h3>2. Конфигурация сети и авторизация</h3><p>Укажите IP, логин, пароль и режим поиска потока.</p></div><div class="image">IMAGE 2</div></div>
+
+<div class="step"><div><h3>3. Активация док-панели управления</h3><p>Перейдите в Docks → ONVIF PTZ.</p></div><div class="image">IMAGE 3</div></div>
+
+<div class="step"><div><h3>4. Живой контроль и пресеты</h3><p>Управление камерой в 8 направлениях и работа с пресетами.</p></div><div class="image">IMAGE 4</div></div>
+
+</div>
+</section>
+
+<section class="section">
+<div class="container">
+<h2 class="section-title">Ключевые возможности</h2>
+<div class="features">
+<div class="feature"><h3>Интеллектуальные пресеты</h3><p>Сохранение и переключение между ракурсами одним кликом.</p></div>
+<div class="feature"><h3>Глобальные горячие клавиши</h3><p>Полная интеграция с системой хоткеев OBS Studio.</p></div>
+<div class="feature"><h3>Высокая производительность</h3><p>Асинхронные SOAP/XML запросы через libcurl без фризов интерфейса.</p></div>
+</div>
+</div>
+</section>
+
+<section class="section">
+<div class="container">
+<div class="devbox">
+<h2>Прозрачность разработки и самодиагностика</h2><br>
+<pre>[ONVIF] Connection timeout
+[ONVIF] Authentication failed
+[TRACKING] Target lost
+[TRACKING] Reacquiring object</pre>
+</div>
+</div>
+</section>
+
+<section class="footercta">
+<div class="container">
+<h2>Готовы поднять качество ваших трансляций на новый уровень?</h2>
+<p>Полностью автономный PTZ-плагин для OBS Studio.</p><br><br>
+<a class="btn primary" href="https://git.miem.hse.ru/gipustovoi/obs-studio-plugin-onvif-ptz/-/tree/master">Посмотреть исходный код на Git</a>
+</div>
+</section>
+
+</body>
+</html>
