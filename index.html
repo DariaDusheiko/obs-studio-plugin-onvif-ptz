@@ -155,29 +155,32 @@
                         </div>
                         
                         <!-- Mini Interactive Widget Preview -->
-                        <div class="p-6 space-y-4">
-                            <!-- Header Info -->
+                        <div class="p-6 space-y-6">
                             <div class="flex items-center justify-between bg-black/20 p-3 rounded-lg border border-gray-800">
                                 <div>
                                     <div class="text-xs text-gray-400 font-mono">Камера подключения:</div>
                                     <div class="text-sm font-bold text-blue-400">IP: 172.18.212.18 [ONVIF Camera]</div>
                                 </div>
-                                <div class="px-2 py-1 bg-green-500/10 text-green-400 text-xs rounded border border-green-500/20 font-mono">ONLINE</div>
+                                <div class="flex items-center gap-2">
+                                    <span class="relative flex h-2 w-2">
+                                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                        <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                    </span>
+                                    <div class="px-2 py-1 bg-green-500/10 text-green-400 text-xs rounded border border-green-500/20 font-mono">ONLINE</div>
+                                </div>
                             </div>
                             
-                            <!-- Static Directional Controller for design weight -->
                             <div class="grid grid-cols-12 gap-4">
                                 <div class="col-span-7 flex flex-col justify-center items-center bg-black/30 p-4 rounded-xl border border-gray-800/80">
                                     <div class="text-xs text-gray-400 mb-3 font-mono">Интуитивный пульт</div>
                                     
-                                    <!-- Direction buttons -->
                                     <div class="grid grid-cols-3 gap-2 w-36 h-36 relative">
                                         <div></div>
                                         <button class="bg-[#242b3d] hover:bg-blue-600 text-white rounded-lg flex items-center justify-center border border-gray-700 active:scale-95 transition-all"><i data-lucide="chevron-up" class="w-6 h-6"></i></button>
                                         <div></div>
                                         
                                         <button class="bg-[#242b3d] hover:bg-blue-600 text-white rounded-lg flex items-center justify-center border border-gray-700 active:scale-95 transition-all"><i data-lucide="chevron-left" class="w-6 h-6"></i></button>
-                                        <div class="bg-red-500 text-white rounded-lg flex items-center justify-center border border-red-400 font-bold text-xs shadow-lg shadow-red-500/30">STOP</div>
+                                        <button class="bg-red-500 text-white rounded-lg flex items-center justify-center border border-red-400 font-bold text-xs shadow-lg shadow-red-500/30 active:scale-95 transition-all">STOP</button>
                                         <button class="bg-[#242b3d] hover:bg-blue-600 text-white rounded-lg flex items-center justify-center border border-gray-700 active:scale-95 transition-all"><i data-lucide="chevron-right" class="w-6 h-6"></i></button>
                                         
                                         <div></div>
@@ -197,19 +200,78 @@
                                             <div class="bg-gradient-to-r from-red-500 to-blue-500 h-full" style="width: 50%"></div>
                                         </div>
                                     </div>
-
+                        
                                     <div class="bg-black/30 p-3 rounded-lg border border-gray-800">
                                         <div class="text-xs text-gray-400 font-mono mb-2">Активные пресеты:</div>
                                         <div class="grid grid-cols-2 gap-1.5">
-                                            <span class="text-[10px] px-1.5 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded text-center">1: Front view</span>
-                                            <span class="text-[10px] px-1.5 py-1 bg-[#1c2130] text-gray-400 rounded text-center">2: Empty</span>
-                                            <span class="text-[10px] px-1.5 py-1 bg-[#1c2130] text-gray-400 rounded text-center">3: Empty</span>
-                                            <span class="text-[10px] px-1.5 py-1 bg-[#1c2130] text-gray-400 rounded text-center">4: Empty</span>
+                                            <span class="text-[10px] px-1.5 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded text-center cursor-pointer hover:bg-blue-500/20 transition-all">1: Front view</span>
+                                            <span class="text-[10px] px-1.5 py-1 bg-[#1c2130] border border-transparent text-gray-400 rounded text-center cursor-pointer hover:border-gray-700 transition-all">2: Empty</span>
+                                            <span class="text-[10px] px-1.5 py-1 bg-[#1c2130] border border-transparent text-gray-400 rounded text-center cursor-pointer hover:border-gray-700 transition-all">3: Empty</span>
+                                            <span class="text-[10px] px-1.5 py-1 bg-[#1c2130] border border-transparent text-gray-400 rounded text-center cursor-pointer hover:border-gray-700 transition-all">4: Empty</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        
+                            <div class="border-t border-gray-800 pt-4 space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <div class="text-xs text-gray-400 font-mono flex items-center gap-1.5">
+                                        <i data-lucide="images" class="w-3.5 h-3.5 text-blue-400"></i>
+                                        Галерея мониторинга:
+                                    </div>
+                                    <div class="flex bg-black/40 p-0.5 rounded-md border border-gray-800 text-[11px]">
+                                        <button onclick="switchTab('all')" id="tab-all" class="px-2.5 py-1 rounded bg-[#242b3d] text-white font-medium transition-all">Все</button>
+                                        <button onclick="switchTab('cv')" id="tab-cv" class="px-2.5 py-1 rounded text-gray-400 hover:text-white transition-all">Компьютерное зрение</button>
+                                        <button onclick="switchTab('ptz')" id="tab-ptz" class="px-2.5 py-1 rounded text-gray-400 hover:text-white transition-all">Пресеты PTZ</button>
+                                    </div>
+                                </div>
+                        
+                                <div class="grid grid-cols-4 gap-2.5">
+                                    <div class="group relative aspect-video bg-black/50 rounded-lg overflow-hidden border border-gray-800 hover:border-blue-500/50 transition-all cursor-pointer gallery-item cat-cv" onclick="openPreview('image_4ec801.jpg', 'Снимок мониторинга (image_4ec801.jpg)')">
+                                        <img src="image_4ec801.jpg" alt="image_4ec801" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300">
+                                        <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black via-black/70 to-transparent p-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <p class="text-[9px] text-blue-400 font-mono truncate">image_4ec801.jpg</p>
+                                        </div>
+                                        <span class="absolute top-1 left-1 px-1 py-0.5 bg-blue-500/20 text-blue-400 text-[8px] rounded border border-blue-500/30 font-mono">CV</span>
+                                    </div>
+                        
+                                    <div class="group relative aspect-video bg-black/50 rounded-lg overflow-hidden border border-gray-800 hover:border-blue-500/50 transition-all cursor-pointer gallery-item cat-cv" onclick="openPreview('image_4ec802.jpg', 'Снимок мониторинга (image_4ec802.jpg)')">
+                                        <img src="image_4ec802.jpg" alt="image_4ec802" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300">
+                                        <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black via-black/70 to-transparent p-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <p class="text-[9px] text-blue-400 font-mono truncate">image_4ec802.jpg</p>
+                                        </div>
+                                        <span class="absolute top-1 left-1 px-1 py-0.5 bg-blue-500/20 text-blue-400 text-[8px] rounded border border-blue-500/30 font-mono">CV</span>
+                                    </div>
+                        
+                                    <div class="group relative aspect-video bg-black/50 rounded-lg overflow-hidden border border-gray-800 hover:border-purple-500/50 transition-all cursor-pointer gallery-item cat-ptz" onclick="openPreview('image_4ec803.png', 'Снимок мониторинга (image_4ec803.png)')">
+                                        <img src="image_4ec803.jpg" alt="image_4ec803" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300">
+                                        <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black via-black/70 to-transparent p-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <p class="text-[9px] text-purple-400 font-mono truncate">image_4ec803.jpg</p>
+                                        </div>
+                                        <span class="absolute top-1 left-1 px-1 py-0.5 bg-purple-500/20 text-purple-400 text-[8px] rounded border border-purple-500/30 font-mono">PTZ</span>
+                                    </div>
+                        
+                                    <div class="group relative aspect-video bg-black/50 rounded-lg overflow-hidden border border-gray-800 hover:border-purple-500/50 transition-all cursor-pointer gallery-item cat-ptz" onclick="openPreview('image_4ec805.jpg', 'Снимок мониторинга (image_4ec805.jpg)')">
+                                        <img src="image_4ec805.jpg" alt="image_4ec805" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300">
+                                        <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black via-black/70 to-transparent p-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <p class="text-[9px] text-purple-400 font-mono truncate">image_4ec805.jpg</p>
+                                        </div>
+                                        <span class="absolute top-1 left-1 px-1 py-0.5 bg-purple-500/20 text-purple-400 text-[8px] rounded border border-purple-500/30 font-mono">PTZ</span>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                            <div id="photo-preview-modal" class="hidden fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex flex-col items-center justify-center p-4 transition-all">
+                                <button onclick="closePreview()" class="absolute top-4 right-4 text-gray-400 hover:text-white p-2 rounded-full bg-gray-900/50 border border-gray-800 transition-colors">
+                                    <i data-lucide="x" class="w-6 h-6"></i>
+                                </button>
+                                <div class="max-w-5xl max-h-[80vh] rounded-xl overflow-hidden border border-gray-800 bg-black shadow-2xl">
+                                    <img id="modal-img" src="" alt="Preview" class="max-w-full max-h-[75vh] object-contain mx-auto">
+                                </div>
+                                <div id="modal-caption" class="text-sm font-mono text-gray-300 mt-4 text-center bg-black/60 px-5 py-2 rounded-full border border-gray-800"></div>
+                            </div>
                         </div>
+                                            
                     </div>
                 </div>
 
@@ -672,7 +734,7 @@
                 </div>
 
                 <!-- Card 3: Tracking -->
-                <div class="bg-slate-900/40 border border-gray-800 p-6 rounded-2xl">
+                <!-- <div class="bg-slate-900/40 border border-gray-800 p-6 rounded-2xl">
                     <div class="flex gap-4 items-start">
                         <div class="p-3 bg-green-500/10 border border-green-500/20 text-green-400 rounded-xl">
                             <i data-lucide="scan" class="w-6 h-6"></i>
@@ -685,7 +747,7 @@
                             </ul>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- Card 4: Logging -->
                 <div class="bg-slate-900/40 border border-gray-800 p-6 rounded-2xl">
@@ -831,7 +893,7 @@
             <div class="mt-10 flex flex-col sm:flex-row justify-center items-center gap-4">
                 <a href="https://git.miem.hse.ru/gipustovoi/obs-studio-plugin-onvif-ptz/-/tree/master" target="_blank" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-base font-bold rounded-xl text-white shadow-xl shadow-red-500/20 transition-all duration-200 hover:-translate-y-0.5">
                     <i data-lucide="github" class="w-5 h-5"></i>
-                    <span>Посмотреть на Git MIEM</span>
+                    <span>Посмотреть на Git MIEM  </span>
                 </a>
                 <a href="#simulator" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 bg-slate-800 hover:bg-slate-700 text-base font-bold rounded-xl text-gray-200 border border-gray-700 transition-all duration-200 hover:-translate-y-0.5">
                     <span>Перейти к Симулятору</span>
@@ -1027,6 +1089,49 @@
 
         // Set Default Transform State
         updateSceneTransform();
+
+        // Проверка инициализации иконок Lucide
+    if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+    }
+
+    // Логика фильтрации вкладок
+    function switchTab(category) {
+        const tabs = ['all', 'cv', 'ptz'];
+        tabs.forEach(tab => {
+            const btn = document.getElementById(`tab-${tab}`);
+            if (tab === category) {
+                btn.classList.add('bg-[#242b3d]', 'text-white');
+                btn.classList.remove('text-gray-400');
+            } else {
+                btn.classList.remove('bg-[#242b3d]', 'text-white');
+                btn.classList.add('text-gray-400');
+            }
+        });
+
+        const items = document.querySelectorAll('.gallery-item');
+        items.forEach(item => {
+            if (category === 'all' || item.classList.contains(`cat-${category}`)) {
+                item.classList.remove('hidden');
+            } else {
+                item.classList.add('hidden');
+            }
+        });
+    }
+
+    // Открытие модального окна просмотра снимка
+    function openPreview(src, caption) {
+        const modal = document.getElementById('photo-preview-modal');
+        document.getElementById('modal-img').src = src;
+        document.getElementById('modal-caption').innerText = caption;
+        modal.classList.remove('hidden');
+    }
+
+    // Закрытие модального окна просмотра снимка
+    function closePreview() {
+        const modal = document.getElementById('photo-preview-modal');
+        modal.classList.add('hidden');
+    }
     </script>
 </body>
 </html>
